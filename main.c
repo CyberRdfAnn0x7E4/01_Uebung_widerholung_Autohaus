@@ -1,6 +1,3 @@
-// 08_09_2020 C++ (wiederh. von C structs) bei Hr. Frank 
-// IAV3/4 wit-a
-
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
@@ -56,55 +53,56 @@ float preisBerechnung(struct Fahrzeuge *Kfz) {
     if(Kfz[1].Laufzeit > Kfz[2].Laufzeit && Kfz[1].Laufzeit > Kfz[0].Laufzeit ){
         GuenstigtesAutoIndex = 1;
     }
-    else {
+    if(Kfz[2].Laufzeit < Kfz[1].Laufzeit && Kfz[2].Laufzeit < Kfz[0].Laufzeit){
         GuenstigtesAutoIndex = 2;
     }
     return GuenstigtesAutoIndex;
 } // end preisBerechnung
 
-void ergebnissAusgabe(char *UserName, float UserRate, struct Fahrzeuge Kfz){
+void ergebnissAusgabe(char *UserName, float UserRate, struct Fahrzeuge *Kfz, int GuenstigtesAutoIndex){
     printf("\n Name des Kunden: %s \n",UserName);
     printf(" Rate des Kunden: %.2f \n",UserRate);
-    printf(" Das guenstigste Fahrzeug ist: %s \n",Kfz.NameFahrzeug);
+    printf(" Das guenstigste Fahrzeug ist: %s \n",Kfz[GuenstigtesAutoIndex].NameFahrzeug);
     printf("-----------------------------------------------------------------\n");
     printf("\t\t Schulden \t\t Zinsen \t Tilgung \n");
     printf("-----------------------------------------------------------------\n");
-    for(int Zeile = 0; Zeile <= Kfz.Laufzeit; Zeile++){
+    for(int Zeile = 0; Zeile <= Kfz[GuenstigtesAutoIndex].Laufzeit; Zeile++){
         printf("%d. Monat \t",Zeile+1);
         for(int Spalte = 0; Spalte <= 2; Spalte++){
-            printf("%.2f \t\t",Kfz.TilgungsPlan[Zeile][Spalte]);
+            printf("%.2f \t\t",Kfz[GuenstigtesAutoIndex].TilgungsPlan[Zeile][Spalte]);
         }
         printf("\n");
     }
-    printf("Das Auto ist nach: %d Monaten Abgezahlt\n\n\n",Kfz.Laufzeit+1);
+    printf("Das Auto ist nach: %d Monaten Abgezahlt\n\n\n",Kfz[GuenstigtesAutoIndex].Laufzeit+1);
 } // end ergebnisAusgabe
 
+
 int main() {
-
+    
 int GuenstigtesAutoIndex = 0;
+struct Fahrzeuge Kfz[3];
 
-    struct Fahrzeuge Kfz[3];
+strcpy(Kfz[0].NameFahrzeug, "Opel Corsa");
+Kfz[0].Kaufpreis = 12500;
+Kfz[0].Zinssatz = 8;
 
-    strcpy(Kfz[0].NameFahrzeug, "Opel Corsa");
-    Kfz[0].Kaufpreis = 12500;
-    Kfz[0].Zinssatz = 8;
+strcpy(Kfz[1].NameFahrzeug, "Scoda Fabia");
+Kfz[1].Kaufpreis = 800;
+Kfz[1].Zinssatz = 5;
 
-    strcpy(Kfz[1].NameFahrzeug, "Scoda Fabia");
-    Kfz[1].Kaufpreis = 13800;
-    Kfz[1].Zinssatz = 5;
+strcpy(Kfz[2].NameFahrzeug, "Renault Clio");
+Kfz[2].Kaufpreis = 15000;
+Kfz[2].Zinssatz = 6;
 
-    strcpy(Kfz[2].NameFahrzeug, "Renault Clio");
-    Kfz[2].Kaufpreis = 15000;
-    Kfz[2].Zinssatz = 6;
-
-    char UserName[MAX_LEN];
-    float UserRate = 0;
+char UserName[MAX_LEN];
+float UserRate = 0;
 
     userEingabe(UserName, &UserRate);
 
     GuenstigtesAutoIndex=preisBerechnung(Kfz);
 
-    ergebnissAusgabe(UserName,UserRate, Kfz[GuenstigtesAutoIndex]);
+    ergebnissAusgabe(UserName,UserRate, Kfz, GuenstigtesAutoIndex);
 
     return 0;
 } // end main
+
