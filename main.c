@@ -39,7 +39,7 @@ Car berechnung(unsigned int rate){
     Car cars[3] = {
         { .name = "Opel Corsa", .price = 12500, .interestRate = 8},
         { .name = "Scoda Fabia", .price = 13800, .interestRate = 5},
-        { .name = "Renault Clio", .price = 150800, .interestRate = 6}
+        { .name = "Renault Clio", .price = 15000, .interestRate = 6}
     };
 
     unsigned int car;
@@ -53,7 +53,7 @@ Car berechnung(unsigned int rate){
     for(car = 0; car < 3; car++){
         price = cars[car].price;
         for(month = 0; month < 50; month++){
-            instalment = (price * cars[car].interestRate /100 ) / 12;
+            instalment = price / 100 * (cars[car].interestRate / 12);
             repayment = rate - instalment;
             if(repayment > price)
                 repayment = price;
