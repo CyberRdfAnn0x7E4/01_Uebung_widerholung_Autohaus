@@ -1,7 +1,6 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
-#include <math.h>
 
 #define MAX_LEN 50
 
@@ -14,7 +13,7 @@ struct Fahrzeuge {
 };
 
 void userEingabe(char *UserName, float *UserRate){
-    /*  I set the username myself to save myself input */
+    /*  I set the username no input */
     char UserNameEingabe[MAX_LEN] = "Dustin";
     float UserRateEingabe = 350.0;
 
@@ -24,62 +23,56 @@ void userEingabe(char *UserName, float *UserRate){
 
 
 
-//float preisBerechnung(struct Fahrzeuge *Kfz) {
-//    // iteration durch Kfz struct
-//    int GuenstigtesAutoIndex = 0;
+float preisBerechnung(struct Fahrzeuge *Kfz) {
+    // für iteration durch Kfz struct
+    int GuenstigtesAutoIndex = 0;
 
-//    for(int KfzNummerIndex = 0; KfzNummerIndex <= 2; KfzNummerIndex++){
-//        float Schulden = Kfz[KfzNummerIndex].Kaufpreis;
-//        float ZinsSatz = Kfz[KfzNummerIndex].Zinssatz;
-//        float UserRate = 350;
-//        float Tilgung = 0;
-//        float PeriodenZins = 0;
+    for(int KfzNummerIndex = 0; KfzNummerIndex <= 2; KfzNummerIndex++){
+        float Schulden = Kfz[KfzNummerIndex].Kaufpreis;
+        float ZinsSatz = Kfz[KfzNummerIndex].Zinssatz;
+        float UserRate = 350;
+        float Tilgung = 0;
+        float PeriodenZins = 0;
 
-//        for(int Zeile = 0; Zeile < MAX_LEN; Zeile++){
-//            PeriodenZins = Schulden / 100 * (ZinsSatz/12);
-//            Tilgung = UserRate - PeriodenZins;
-//            /*  If debt are less than the repayment installment,
-//                the final installment of the debt is as large as the debt itself */
-//            if(Schulden <= Tilgung){
-//                Tilgung = Schulden;
-//            }
-//            Kfz[KfzNummerIndex].TilgungsPlan[Zeile][0] = Schulden;
-//            Kfz[KfzNummerIndex].TilgungsPlan[Zeile][1] = PeriodenZins;
-//            Kfz[KfzNummerIndex].TilgungsPlan[Zeile][2] = Tilgung;
-//            Schulden = Schulden - Tilgung;
-//            /*  debit term is over if debit = 0 then set Laufzeit*/
-//            if(Schulden == 0 ) {
-//                Kfz[KfzNummerIndex].Laufzeit = Zeile;
-//                break;
-//            }
-//        }
-//    }
-//    /*  check which runtime is the shortest*/
-//    if(Kfz[0].Laufzeit > Kfz[1].Laufzeit && Kfz[1].Laufzeit > Kfz[2].Laufzeit ){
-//        GuenstigtesAutoIndex = 0;
-//    }
-//    if(Kfz[1].Laufzeit > Kfz[2].Laufzeit && Kfz[1].Laufzeit > Kfz[0].Laufzeit ){
-//        GuenstigtesAutoIndex = 1;
-//    }
-//    else {
-//        GuenstigtesAutoIndex = 2;
-//    }
+        for(int Zeile = 0; Zeile < MAX_LEN; Zeile++){
+            PeriodenZins = Schulden / 100 * (ZinsSatz/12);
+            Tilgung = UserRate - PeriodenZins;
+            if(Schulden <= Tilgung) {
+                Tilgung = Schulden;
+            }
+            Kfz[KfzNummerIndex].TilgungsPlan[Zeile][0] = Schulden;
+            Kfz[KfzNummerIndex].TilgungsPlan[Zeile][1] = PeriodenZins;
+            Kfz[KfzNummerIndex].TilgungsPlan[Zeile][2] = Tilgung;
+            Schulden = Schulden - Tilgung;
+            if(Schulden == 0 ) {
+                Kfz[KfzNummerIndex].Laufzeit = Zeile;
+                break;
+            }
+        }
+    }
+    /*  check which runtime is the shortest*/
+    if(Kfz[0].Laufzeit > Kfz[1].Laufzeit && Kfz[1].Laufzeit > Kfz[2].Laufzeit ){
+        GuenstigtesAutoIndex = 0;
+    }
+    if(Kfz[1].Laufzeit > Kfz[2].Laufzeit && Kfz[1].Laufzeit > Kfz[0].Laufzeit ){
+        GuenstigtesAutoIndex = 1;
+    }
+    else {
+        GuenstigtesAutoIndex = 2;
+    }
 
-//    return GuenstigtesAutoIndex;
-//} // end preisBerechnung
+    return GuenstigtesAutoIndex;
+} // end preisBerechnung
 
 int bestKredit(struct Fahrzeuge *Kfz, float UserRate){
     int bestesKreditIndex = 0;
-
 
     for(int KfzNummerIndex = 0; KfzNummerIndex <= 2; KfzNummerIndex++){
         float TilgungInProzent = UserRate/Kfz[KfzNummerIndex].Kaufpreis;
         float KreditSumme = Kfz[KfzNummerIndex].Kaufpreis;
         float ZinsSatzKunde = Kfz[KfzNummerIndex].Zinssatz / 100;
         int LaufzeitKredit = (log10(1+ ZinsSatzKunde/TilgungInProzent))/(log10(ZinsSatzKunde + 1));
-
     }
-
 
     return bestesKreditIndex;
 }
@@ -125,7 +118,6 @@ int GuenstigtesAutoIndex = 0;
 
     userEingabe(UserName, &UserRate);
 
-//    GuenstigtesAutoIndex = preisBerechnung(Kfz);
     bestKredit(Kfz, UserRate);
 
     ergebnissAusgabe(UserName,UserRate, Kfz[GuenstigtesAutoIndex]);
