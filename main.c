@@ -1,9 +1,10 @@
+// 08_09_2020 C++ (wiederh. von C structs) bei Hr. Frank 
+// IAV3/4 wit-a
+
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
-
 #define MAX_LEN 50
-
 struct Fahrzeuge {
     char NameFahrzeug[MAX_LEN];
     float Kaufpreis;
@@ -20,8 +21,6 @@ void userEingabe(char *UserName, float *UserRate){
     strcpy(UserName, UserNameEingabe);
     *UserRate = UserRateEingabe;
 } // end user Eingabe
-
-
 
 float preisBerechnung(struct Fahrzeuge *Kfz) {
     // für iteration durch Kfz struct
@@ -60,26 +59,12 @@ float preisBerechnung(struct Fahrzeuge *Kfz) {
     else {
         GuenstigtesAutoIndex = 2;
     }
-
     return GuenstigtesAutoIndex;
 } // end preisBerechnung
 
-int bestKredit(struct Fahrzeuge *Kfz, float UserRate){
-    int bestesKreditIndex = 0;
-
-    for(int KfzNummerIndex = 0; KfzNummerIndex <= 2; KfzNummerIndex++){
-        float TilgungInProzent = UserRate/Kfz[KfzNummerIndex].Kaufpreis;
-        float KreditSumme = Kfz[KfzNummerIndex].Kaufpreis;
-        float ZinsSatzKunde = Kfz[KfzNummerIndex].Zinssatz / 100;
-        int LaufzeitKredit = (log10(1+ ZinsSatzKunde/TilgungInProzent))/(log10(ZinsSatzKunde + 1));
-    }
-
-    return bestesKreditIndex;
-}
-
 void ergebnissAusgabe(char *UserName, float UserRate, struct Fahrzeuge Kfz){
     printf("\n Name des Kunden: %s \n",UserName);
-    printf("\n Rate des Kunden: %.2f \n",UserRate);
+    printf(" Rate des Kunden: %.2f \n",UserRate);
     printf(" Das guenstigste Fahrzeug ist: %s \n",Kfz.NameFahrzeug);
     printf("-----------------------------------------------------------------\n");
     printf("\t\t Schulden \t\t Zinsen \t Tilgung \n");
@@ -93,7 +78,6 @@ void ergebnissAusgabe(char *UserName, float UserRate, struct Fahrzeuge Kfz){
     }
     printf("Das Auto ist nach: %d Monaten Abgezahlt\n\n\n",Kfz.Laufzeit+1);
 } // end ergebnisAusgabe
-
 
 int main() {
 
@@ -118,10 +102,9 @@ int GuenstigtesAutoIndex = 0;
 
     userEingabe(UserName, &UserRate);
 
-    bestKredit(Kfz, UserRate);
+    GuenstigtesAutoIndex=preisBerechnung(Kfz);
 
     ergebnissAusgabe(UserName,UserRate, Kfz[GuenstigtesAutoIndex]);
 
     return 0;
 } // end main
-
