@@ -1,110 +1,100 @@
-// 08_09_2020 C++ (wiederh. von C structs) bei Hr. Frank 
-// IAV3/4 wit-a
-
 #include <stdio.h>
-#include <string.h>
-#include <stdlib.h>
-#define MAX_LEN 50
-struct Fahrzeuge {
-    char NameFahrzeug[MAX_LEN];
-    float Kaufpreis;
-    float Zinssatz;
-    int Laufzeit;
-    float TilgungsPlan[MAX_LEN][3];
-};
 
-void userEingabe(char *UserName, float *UserRate){
-    /*  I set the username no input */
-    char UserNameEingabe[MAX_LEN] = "Dustin";
-    float UserRateEingabe = 350.0;
+typedef struct {
+    char name[50];
+    double price;
+    double interestRate;
+    double financing[50][3];
+} Car;
 
-    strcpy(UserName, UserNameEingabe);
-    *UserRate = UserRateEingabe;
-} // end user Eingabe
+void eingabe(char*, unsigned int* );
+Car berechnung(unsigned int);
+void ausgabe(Car*, unsigned int, char* );
 
-float preisBerechnung(struct Fahrzeuge *Kfz) {
-    // für iteration durch Kfz struct
-    int GuenstigtesAutoIndex = 0;
+int main()
+{
+    Car car;
+    unsigned int rate;
+    unsigned char name[50];
 
-    for(int KfzNummerIndex = 0; KfzNummerIndex <= 2; KfzNummerIndex++){
-        float Schulden = Kfz[KfzNummerIndex].Kaufpreis;
-        float ZinsSatz = Kfz[KfzNummerIndex].Zinssatz;
-        float UserRate = 350;
-        float Tilgung = 0;
-        float PeriodenZins = 0;
+    eingabe(name, &rate);
+    car = berechnung(rate);
+    ausgabe(&car, rate, name);
 
-        for(int Zeile = 0; Zeile < MAX_LEN; Zeile++){
-            PeriodenZins = Schulden / 100 * (ZinsSatz/12);
-            Tilgung = UserRate - PeriodenZins;
-            if(Schulden <= Tilgung) {
-                Tilgung = Schulden;
-            }
-            Kfz[KfzNummerIndex].TilgungsPlan[Zeile][0] = Schulden;
-            Kfz[KfzNummerIndex].TilgungsPlan[Zeile][1] = PeriodenZins;
-            Kfz[KfzNummerIndex].TilgungsPlan[Zeile][2] = Tilgung;
-            Schulden = Schulden - Tilgung;
-            if(Schulden == 0 ) {
-                Kfz[KfzNummerIndex].Laufzeit = Zeile;
-                break;
-            }
-        }
-    }
-    /*  check which runtime is the shortest*/
-    if(Kfz[0].Laufzeit > Kfz[1].Laufzeit && Kfz[1].Laufzeit > Kfz[2].Laufzeit ){
-        GuenstigtesAutoIndex = 0;
-    }
-    if(Kfz[1].Laufzeit > Kfz[2].Laufzeit && Kfz[1].Laufzeit > Kfz[0].Laufzeit ){
-        GuenstigtesAutoIndex = 1;
-    }
-    else {
-        GuenstigtesAutoIndex = 2;
-    }
-    return GuenstigtesAutoIndex;
-} // end preisBerechnung
-
-void ergebnissAusgabe(char *UserName, float UserRate, struct Fahrzeuge Kfz){
-    printf("\n Name des Kunden: %s \n",UserName);
-    printf(" Rate des Kunden: %.2f \n",UserRate);
-    printf(" Das guenstigste Fahrzeug ist: %s \n",Kfz.NameFahrzeug);
-    printf("-----------------------------------------------------------------\n");
-    printf("\t\t Schulden \t\t Zinsen \t Tilgung \n");
-    printf("-----------------------------------------------------------------\n");
-    for(int Zeile = 0; Zeile <= Kfz.Laufzeit; Zeile++){
-        printf("%d. Monat \t",Zeile+1);
-        for(int Spalte = 0; Spalte <= 2; Spalte++){
-            printf("%.2f \t\t",Kfz.TilgungsPlan[Zeile][Spalte]);
-        }
-        printf("\n");
-    }
-    printf("Das Auto ist nach: %d Monaten Abgezahlt\n\n\n",Kfz.Laufzeit+1);
-} // end ergebnisAusgabe
-
-int main() {
-
-int GuenstigtesAutoIndex = 0;
-
-    struct Fahrzeuge Kfz[3];
-
-    strcpy(Kfz[0].NameFahrzeug, "Opel Corsa");
-    Kfz[0].Kaufpreis = 12500;
-    Kfz[0].Zinssatz = 8;
-
-    strcpy(Kfz[1].NameFahrzeug, "Scoda Fabia");
-    Kfz[1].Kaufpreis = 13800;
-    Kfz[1].Zinssatz = 5;
-
-    strcpy(Kfz[2].NameFahrzeug, "Renault Clio");
-    Kfz[2].Kaufpreis = 15000;
-    Kfz[2].Zinssatz = 6;
-
-    char UserName[MAX_LEN];
-    float UserRate = 0;
-
-    userEingabe(UserName, &UserRate);
-
-    GuenstigtesAutoIndex=preisBerechnung(Kfz);
-
-    ergebnissAusgabe(UserName,UserRate, Kfz[GuenstigtesAutoIndex]);
 
     return 0;
-} // end main
+}
+
+void eingabe(char* name, unsigned int* interestRate){
+
+    printf("\n\nHallo.\nName: ");
+    scanf("%s", name);
+
+    printf("\nRatensatz: ");
+    scanf("%u", interestRate);
+}
+
+Car berechnung(unsigned int rate){
+
+    Car cars[3] = {
+        { .name = "Opel Corsa", .price = 12500, .interestRate = 8},
+        { .name = "Scoda Fabia", .price = 13800, .interestRate = 5},
+        { .name = "Renault Clio", .price = 150800, .interestRate = 6}
+    };
+
+    unsigned int car;
+    unsigned int
+            bestIndex = 0,
+            lowestRunntime = 51,
+            month;
+
+    double instalment, repayment, price;
+
+    for(car = 0; car < 3; car++){
+        price = cars[car].price;
+        for(month = 0; month < 50; month++){
+            instalment = (price * cars[car].interestRate /100 ) / 12;
+            repayment = rate - instalment;
+            if(repayment > price)
+                repayment = price;
+
+            cars[car].financing[month][0] = price;
+            cars[car].financing[month][1] = instalment;
+            cars[car].financing[month][2] = repayment;
+
+            if(price <= repayment)
+                break;
+
+            price -= repayment;
+        }
+
+        if(lowestRunntime > month){
+            lowestRunntime = month;
+            bestIndex = car;
+        }
+    }
+
+    return cars[bestIndex];
+}
+
+void ausgabe(Car* car, unsigned int rate, char* name){
+
+    unsigned int month;
+
+    printf("Fahrzeug:\t%s\tName des Kunden:\t%s\n\n", car->name, name);
+    printf("Monat\t\tSchulden\tZinsen\t\tTilgung\n");
+    for(month = 0; month < 50 ; month++){
+        printf("%d. Monat\t%8.2lf\t%8.2lf\t%8.2lf\n", month+1, car->financing[month][0], car->financing[month][1], car->financing[month][2]);
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
